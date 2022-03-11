@@ -1,0 +1,169 @@
+---
+title: "Project 2"
+author: "Moiya Josephs"
+date: "3/10/2022"
+output: 
+  html_document:
+    toc: true
+    
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(ggplot2)
+
+```
+
+# Overview
+
+The goal of the assignment is to practive preparing various datasets and cleaning them using dplyr and tidyverse. We were tasked to choose 
+three of the “wide” datasets identified in the Week 6 Discussion items. For each of the three chosen datasets:
+
+Create a .CSV file (or optionally, a MySQL database!) that includes all of the information included in the dataset. 
+
+Read the information from your .CSV file into R, and use tidyr and dplyr as needed to tidy and transform your data. 
+Perform the analysis requested in the discussion item.
+
+Your code should be in an R Markdown file, posted to rpubs.com, and should include narrative descriptions of your data cleanup work, analysis, and conclusions.
+(2) Please include in your homework submission, for each of the three chosen datasets:
+ The URL to the .Rmd file in your GitHub repository, and
+ The URL for your rpubs.com web page
+
+<hr>
+
+# Dataset: The Ramen rater, "THE BIG LIST," 2021
+
+The first data set I chose was found by ____. The database was called [Ramen Ratings](https://www.kaggle.com/residentmario/ramen-ratings) and it is recorded data of a ramen product review. Each ramen was rated on a 5-point scale to indicate its quality according to the reviewer. The data stays pretty current and has over 2400 lines of data.The recommended analysis suggested by my classmate was to:
+
+1) Analyze the favorite flavor
+2) Find the most popular brand
+3) Find the most popular ramen style
+
+## Get a feel for the data
+
+```{r}
+ramen_csv = "https://raw.githubusercontent.com/moiyajosephs/Data607-Project2/main/ramen-ratings.csv"
+ramen = read.csv(ramen_csv,header=TRUE,sep=",")
+summary(ramen)
+```
+```{r}
+head(ramen)
+```
+
+It looks like there are 2580 reviews in total with 7 columns. The review number/id the brand of ramen, variety, style, country and the rating. The last column Top.Ten looks as if it has no values, luckily there is a way to test if this is true.
+
+```{r}
+# Check if Top Ten is a missing column, if so remove it. Look what this value is supposed to be 
+topten_na <- sum(is.na(ramen$Top.Ten))
+topten_na
+```
+Interestingly enough the values are not counted as NA. I realized it is just an empty string. 
+```{r}
+topten_empty <- sum(ramen$Top.Ten == "")
+topten_empty
+```
+I was wrong before in assuming there were NA values. However I did note that the amount of empty strings does not equal the amount of rows available, that means there were values in the last column, though not many. To find which value it was I filtered  
+```{r}
+topten_value <- ramen %>% select(Review..,Brand, Variety, Style, Country, Top.Ten) %>% filter(Top.Ten != "")
+topten_value
+```
+By filtering the data this way I can understand the point of the column. Now I understand that the column Top.Ten is indicating the rating the ramen got for being top ten best of that given year.
+
+To go into further analysis I will change the empty strings to NA since R has nice functionality in how to deal with missing values. I will also remove the new line entries in some of the rows.
+
+```{r}
+ramen <- ramen %>% mutate(Top.Ten = replace(Top.Ten, Top.Ten== "", NA )) %>% mutate(Top.Ten = replace(Top.Ten, Top.Ten == "\n", NA ))
+ramen
+```
+Another thing I noticed is the Stars is of type character. It would be more useful if it was numeric.
+
+```{r}
+ramen$Stars <- as.numeric(ramen$Stars)
+ramen
+```
+
+
+## Answer the questions/ suggested analysis
+
+
+
+### Analyse the Favorite Flavor
+```{r}
+ramen %>% select(Variety, Style, Stars) %>% filter(Stars == 5)
+```
+There are 386 5 star ramen in this data set. Hard to say which one is the top, luckily there is a Top.Ten Category to see if the 5 star rated ramen also scored in the Top Ten for the year. 
+
+```{r}
+ramen %>% select(Variety, Style, Stars,Top.Ten) %>% filter(Stars == 5, !is.na(Top.Ten))
+```
+Only 32 values that were rated a full five stars were also in the Top Ten for that year. We can also find the ramen that was rated #1.
+```{r}
+top_ramen <- ramen %>% select(Variety, Style, Stars, Top.Ten) %>% filter(str_detect(Top.Ten, '#1$'))
+top_ramen
+```
+Only these five values, `r top_ramen[1,1]`, `r top_ramen[1,2]`,`r top_ramen[1,1]`,`r top_ramen[1,3]`,`r top_ramen[1,4]` and `r top_ramen[1,5]`  were #1, had five star and had five star ratings. This also answers one of the questions what is the most popular ramen style. 
+
+
+
+### Find the most popular ramen style
+
+From the first analysis we found the most popular ramen style was `r top_ramen[2,1]`.
+
+#### Count the number of 5 stars per Style.
+
+```{r}
+ramen %>% select(Style, Stars) %>% group_by(Style) %>% filter(Stars == 5) %>% count(Stars == 5 ) 
+```
+With the table we can see the values that the violin plot dropped, like bar, box and tray. Again pack is the most popular with 239 5 star ratings. It also may be possible that it is the most common type. Below I counted the amount of occurrences of a style to check if my hypothesis is true. Pack again is the most frequent. 
+
+```{r}
+ramen %>% select(Style) %>% count(Style) 
+```
+Here is a graphical output. 
+
+```{r}
+ggplot(ramen,aes(Style)) + geom_bar()
+```
+The bar graph above shows just how drastic the difference is between the different styles of ramen. 
+
+### Find the most popular brand
+
+This data has proven difficult to work with because it wont combine all the same brands.
+
+```{r}
+ramen %>% select(Brand,Stars) %>% group_by(Brand) %>% filter(Stars == 5) %>% count(Brand)
+
+```
+
+
+# Part 1 Conclusions
+
+
+
+<hr>
+
+
+
+# This is a Kaggle data from superhero TV shows
+
+https://www.kaggle.com/anoopkumarraut/superhero-tv-shows/data
+
+Possible Analysis:
+
+What is the highest-rated TV show of each year.
+What is the highest rated TV show from each category in the data set.
+
+
+
+
+
+# Github Programming Languages Data
+
+https://www.kaggle.com/isaacwen/github-programming-languages-data?select=issues.csv
+
+For manipulations I can look at the change in the change (like a discrete second derivative?) from quarter to quarter for languages to look at ones that are increases or decreasing in popularity.
+
+I can try to make an infographic with significant languages (there are over 400 languages on the list!) and their purpose.
+
+There's three datasets in total, with information on repos, issues and PRs, so I can learn what the differences are and explain that.
