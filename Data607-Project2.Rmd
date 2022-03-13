@@ -155,7 +155,57 @@ What is the highest-rated TV show of each year.
 What is the highest rated TV show from each category in the data set.
 
 
+```{r}
+tv_csv = "https://raw.githubusercontent.com/moiyajosephs/Data607-Project2/main/Dataset_Superhero-TV-Shows.csv"
+tv = read.csv(tv_csv,header=TRUE,sep=",")
+summary(tv)
+```
+```{r}
+head(tv)
 
+
+
+```
+# What is the highest-rated TV Show of each year
+Some of the television shows release year value is a range instead of a single date. To answer this question, if it is a range I will consider the first year as its release year and the last year indicated as its final year. I will then look for the highest rated show based on a televisions release year. 
+
+First I will seperate the release year by the - between the release and the final year. Some TV shows have no end year, meaning they are still ongoing. 
+
+```{r}
+tv <- tv %>%  separate(release_year, into = c("release", "end"))
+tv
+```
+Now that the table is separated, I will group by the release year and find the maximum rating for each.
+
+
+```{r}
+tv %>% select(show_title, imdb_rating,release) %>% group_by(release) %>% slice(which.max(imdb_rating))
+```
+Here I am able to see all the years and the ratings for the top television shows for that year. In 2022, The Legend of Vox Machina was the highest rated television show so far with a score of 8.6. 
+
+
+# What is the highest TV Show from each category in the data set?
+
+The television data set can have many genres, in  this data set at least 1 genre is listed. The maximum genres listed is three. I split the list of genres into three seperate genres and compared them based on which genre was listed first.
+
+```{r}
+tv <- tv %>%  separate(genre, into = c("genre1", "genre2", "genre3"), sep = ",")
+tv
+
+```
+```{r}
+tv %>% select(show_title, imdb_rating,genre1) %>% group_by(genre1) %>% slice(which.max(imdb_rating))
+```
+When considering the first genre, each genre is listed seperately with the highest rated televidion show and rating. The genre with the highest rating is *Avatar the Last Airbender*, which is an animation that recieved a score of 9.3.
+
+```{r}
+tv %>% select(show_title, imdb_rating,genre2) %>% group_by(genre2) %>% slice(which.max(imdb_rating))
+
+```
+```{r}
+tv %>% select(show_title, imdb_rating,genre3) %>% group_by(genre3) %>% slice(which.max(imdb_rating))
+
+```
 
 
 # Github Programming Languages Data
@@ -163,6 +213,16 @@ What is the highest rated TV show from each category in the data set.
 https://www.kaggle.com/isaacwen/github-programming-languages-data?select=issues.csv
 
 For manipulations I can look at the change in the change (like a discrete second derivative?) from quarter to quarter for languages to look at ones that are increases or decreasing in popularity.
+
+```{r}
+issues_csv = "https://raw.githubusercontent.com/moiyajosephs/Data607-Project2/main/ramen-ratings.csv"
+issues = read.csv(issues_csv,header=TRUE,sep=",")
+summary(issues)
+```
+
+```{r}
+
+```
 
 I can try to make an infographic with significant languages (there are over 400 languages on the list!) and their purpose.
 
