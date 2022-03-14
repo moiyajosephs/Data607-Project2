@@ -15,7 +15,7 @@ library(ggplot2)
 
 ```
 
-# Overview
+# Overview  
 
 The goal of the assignment is to practive preparing various datasets and cleaning them using dplyr and tidyverse. We were tasked to choose 
 three of the “wide” datasets identified in the Week 6 Discussion items. For each of the three chosen datasets:
@@ -32,7 +32,9 @@ Your code should be in an R Markdown file, posted to rpubs.com, and should inclu
 
 <hr>
 
-# Dataset: The Ramen rater, "THE BIG LIST," 2021
+# The Ramen rater, "THE BIG LIST," 2021 {.tabset}
+
+## Overview
 
 The first data set I chose was found by ____. The database was called [Ramen Ratings](https://www.kaggle.com/residentmario/ramen-ratings) and it is recorded data of a ramen product review. Each ramen was rated on a 5-point scale to indicate its quality according to the reviewer. The data stays pretty current and has over 2400 lines of data.The recommended analysis suggested by my classmate was to:
 
@@ -40,7 +42,7 @@ The first data set I chose was found by ____. The database was called [Ramen Rat
 2) Find the most popular brand
 3) Find the most popular ramen style
 
-## Get a feel for the data
+### Get a feel for the data
 
 ```{r}
 ramen_csv = "https://raw.githubusercontent.com/moiyajosephs/Data607-Project2/main/ramen-ratings.csv"
@@ -137,7 +139,7 @@ ramen %>% select(Brand,Stars) %>% group_by(Brand) %>% filter(Stars == 5) %>% cou
 ```
 
 
-# Part 1 Conclusions
+## Part 1 Conclusions
 
 
 
@@ -145,7 +147,9 @@ ramen %>% select(Brand,Stars) %>% group_by(Brand) %>% filter(Stars == 5) %>% cou
 
 
 
-# This is a Kaggle data from superhero TV shows
+# This is a Kaggle data from superhero TV shows  {.tabset}
+
+## Overview
 
 https://www.kaggle.com/anoopkumarraut/superhero-tv-shows/data
 
@@ -166,7 +170,11 @@ head(tv)
 
 
 ```
-# What is the highest-rated TV Show of each year
+
+## Analysis
+
+### What is the highest-rated TV Show of each year?
+
 Some of the television shows release year value is a range instead of a single date. To answer this question, if it is a range I will consider the first year as its release year and the last year indicated as its final year. I will then look for the highest rated show based on a televisions release year. 
 
 First I will seperate the release year by the - between the release and the final year. Some TV shows have no end year, meaning they are still ongoing. 
@@ -184,13 +192,13 @@ tv %>% select(show_title, imdb_rating,release) %>% group_by(release) %>% slice(w
 Here I am able to see all the years and the ratings for the top television shows for that year. In 2022, The Legend of Vox Machina was the highest rated television show so far with a score of 8.6. 
 
 
-# What is the highest TV Show from each category in the data set?
+### What is the highest TV Show from each category in the data set?
 
-The television data set can have many genres, in  this data set at least 1 genre is listed. The maximum genres listed is three. I split the list of genres into three seperate genres and compared them based on which genre was listed first.
+The television data set can have many genres, in  this data set at least 1 genre is listed. The maximum genres listed is three. I split the list of genres into three separate genres and compared them based on which genre was listed first.
 
 ```{r}
 tv <- tv %>%  separate(genre, into = c("genre1", "genre2", "genre3"), sep = ",")
-tv
+head(tv)
 
 ```
 ```{r}
@@ -208,22 +216,33 @@ tv %>% select(show_title, imdb_rating,genre3) %>% group_by(genre3) %>% slice(whi
 ```
 
 
-# Github Programming Languages Data
+# Food Scrap Drop-Off Locations in NYC | NYC Open Data  {.tabset}
 
-https://www.kaggle.com/isaacwen/github-programming-languages-data?select=issues.csv
+## Overview
 
-For manipulations I can look at the change in the change (like a discrete second derivative?) from quarter to quarter for languages to look at ones that are increases or decreasing in popularity.
+Which Council Districts have the most drop-offs
+What do those have in common?
+What day/time is most popular for drop-off?
+How many are open year round?
+What do those have in common?
+Do any Community Districts have more then one drop-off? What about Census Tracts?
+Which borough has the most drop-offs
 
-```{r}
-issues_csv = "https://raw.githubusercontent.com/moiyajosephs/Data607-Project2/main/ramen-ratings.csv"
-issues = read.csv(issues_csv,header=TRUE,sep=",")
-summary(issues)
-```
 
-```{r}
 
-```
+## Analysis 
 
-I can try to make an infographic with significant languages (there are over 400 languages on the list!) and their purpose.
+### Which Council Districts have the most drop-offs? What do they have in common?
 
-There's three datasets in total, with information on repos, issues and PRs, so I can learn what the differences are and explain that.
+
+### What day/time is most popular for drop-off?
+
+### How many are open year round? What do those have in common?
+
+### Do any Community Districts have more then one drop-off? What about Census Tracts?
+
+### Which borough has the most drop-offs
+
+
+
+
